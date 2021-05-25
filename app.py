@@ -62,7 +62,8 @@ async def on_message(message):
             )
             coin_data = response.json()[0]
             coin_code = market_code.replace("KRW-", "")
-            embed = discord.Embed(title=coin_kor_name + f" ({coin_code})" + " 일별 시세", color=0x00aaaa)
+            color = "#d60000" if coin_data['change_price'] > 0 else "#0051C7"
+            embed = discord.Embed(title=coin_kor_name + f" ({coin_code})" + " 일별 시세", color=color)
             embed.set_thumbnail(url=f"https://static.upbit.com/logos/{coin_code}.png")
             embed.set_image(url=f"https://imagechart.upbit.com/d/mini/{coin_code}.png")
             #embed.add_field(name="시가", value=coin_data['opening_price'], inline=False)
