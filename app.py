@@ -62,7 +62,7 @@ async def on_message(message):
             )
             coin_data = response.json()[0]
             coin_code = market_code.replace("KRW-", "")
-            color = "#d60000" if coin_data['change_price'] > 0 else "#0051C7"
+            color = 0xd60000 if coin_data['change_price'] > 0 else 0x0051C7
             embed = discord.Embed(title=coin_kor_name + f" ({coin_code})" + " 일별 시세", color=color)
             embed.set_thumbnail(url=f"https://static.upbit.com/logos/{coin_code}.png")
             embed.set_image(url=f"https://imagechart.upbit.com/d/mini/{coin_code}.png")
@@ -77,17 +77,6 @@ async def on_message(message):
             date = datetime.datetime.fromtimestamp(int(coin_data['timestamp']) // 1000).strftime('%Y-%m-%d %H:%M')
             embed.set_footer(text=f"\n({date} 기준)", icon_url="https://search1.daumcdn.net/thumb/C53x16.q80/?fname=https%3A%2F%2Fsearch1.daumcdn.net%2Fsearch%2Fstatics%2Fspecial%2Fmi%2Fr2%2Fimg_upbit.png")
 
-            bot_message = f"[{coin_kor_name}]\n" \
-                          f"시가: {coin_data['opening_price']}\n" \
-                          f"저가: {coin_data['low_price']}\n" \
-                          f"고가: {coin_data['high_price']}\n" \
-                          f"종가: {coin_data['trade_price']}\n" \
-                          f"전일대비: {coin_data['change_price']} ({coin_data['change_rate']}%)" \
-
-            bot_message += ":small_red_triangle:" if coin_data['change_price'] > 0 else ":small_red_triangle_down:"
-
-
-            bot_message += f"\n({date} 기준)"
             await channel.send(embed=embed)
 
 
