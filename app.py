@@ -31,10 +31,35 @@ async def on_message(message):
     if message.content.startswith('!안녕'):
         channel = message.channel
         await channel.send('반가워!')
+
     elif message.content.startswith('!떡락'):
         channel = message.channel
-        embed = discord.Embed(title='떡락', color=0x0051C7)
+        embed = discord.Embed(color=0x0051C7)
         embed.set_image(url="https://www.dogdrip.net/dvs/d/20/08/29/aa58a3f207326ff0b944a1f7538688ef.jpg")
+        await channel.send(embed=embed)
+
+    elif message.content.startswith('!떡상'):
+        channel = message.channel
+        embed = discord.Embed(color=0xd60000)
+        embed.set_image(url="https://www.dogdrip.net/dvs/d/20/08/29/4fd145c38189ac5683acc9be3e17f184.jpg")
+        await channel.send(embed=embed)
+
+    elif message.content.startswith('!드가자'):
+        channel = message.channel
+        embed = discord.Embed(color=0xd60000)
+        embed.set_image(url="https://www.dogdrip.net/dvs/d/21/02/28/d70bdeae55e567fe6ede9d40f116d04b.jpg")
+        await channel.send(embed=embed)
+
+    elif message.content.startswith('!대공황'):
+        channel = message.channel
+        embed = discord.Embed(color=0xd60000)
+        embed.set_image(url="https://www.dogdrip.net/dvs/d/21/02/28/f1025b187944b843828cc85467bea86c.jpg")
+        await channel.send(embed=embed)
+
+    elif message.content.startswith('!대호황'):
+        channel = message.channel
+        embed = discord.Embed(color=0xd60000)
+        embed.set_image(url="https://www.dogdrip.net/dvs/d/21/02/28/c17bc0d9af8d67d5b071810c0aeadb25.jpg")
         await channel.send(embed=embed)
 
 
