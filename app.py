@@ -32,6 +32,12 @@ async def on_message(message):
         channel = message.channel
         await channel.send('반가워!')
 
+    elif message.content.startswith('!명령어'):
+        channel = message.channel
+        embed = discord.Embed(title="명령어 목록", color=0x0051C7)
+        embed.add_field(name="이모지", value="!떡락, !떡상, !드가자, !대공황, !대호황", inline=True)
+        await channel.send(embed=embed)
+
     elif message.content.startswith('!떡락'):
         channel = message.channel
         embed = discord.Embed(color=0x0051C7)
