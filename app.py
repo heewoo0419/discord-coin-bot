@@ -31,6 +31,12 @@ async def on_message(message):
     if message.content.startswith('!안녕'):
         channel = message.channel
         await channel.send('반가워!')
+    elif message.content.startswith('!떡락'):
+        channel = message.channel
+        embed = discord.Embed(title='떡락', color=0x0051C7)
+        embed.set_image(url="https://www.dogdrip.net/dvs/d/20/08/29/aa58a3f207326ff0b944a1f7538688ef.jpg")
+        await channel.send(embed=embed)
+
 
     elif message.content.startswith('!'):
         channel = message.channel
