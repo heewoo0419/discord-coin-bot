@@ -1,5 +1,7 @@
 import asyncio
 import datetime
+import os
+
 import discord
 import requests
 from decimal import *
@@ -7,7 +9,7 @@ from decimal import *
 client = discord.Client()
 
 # 생성된 토큰을 입력해준다.
-token = "ODQ2NDQzNjcxOTE3OTUzMDQ0.YKvmGQ.67qLk9SYfjWYrVRgZV6VSvDXkWg"
+token = os.environ["TOKEN"]
 
 
 # 봇이 구동되었을 때 보여지는 코드
