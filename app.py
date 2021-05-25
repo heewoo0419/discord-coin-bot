@@ -35,7 +35,8 @@ async def on_message(message):
     elif message.content.startswith('!명령어'):
         channel = message.channel
         embed = discord.Embed(title="명령어 목록", color=0x0051C7)
-        embed.add_field(name="이모지", value="!떡락, !떡상, !드가자, !대공황, !대호황", inline=True)
+        embed.add_field(name="이모지", value="!떡락, !떡상, !드가자, !대공황, !대호황", inline=False)
+        embed.add_field(name="코인 시세", value="!<코인이름>", inline=False)
         await channel.send(embed=embed)
 
     elif message.content.startswith('!떡락'):
