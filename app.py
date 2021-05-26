@@ -96,8 +96,7 @@ async def on_message(message):
             int(coin_data['priceChange'])) + " KRW" + f" ({coin_data['priceChangePercent']}%)"
         embed.add_field(name="전일대비", value=change_text, inline=False)
         date = datetime.datetime.fromtimestamp(int(coin_data['timestamp']) // 1000).strftime('%Y-%m-%d %H:%M')
-        embed.set_footer(text=f"\n({date} 기준)",
-                         icon_url="https://search1.daumcdn.net/thumb/C53x16.q80/?fname=https%3A%2F%2Fsearch1.daumcdn.net%2Fsearch%2Fstatics%2Fspecial%2Fmi%2Fr2%2Fimg_upbit.png")
+        #embed.set_footer(text=f"\n({date} 기준)",icon_url="https://search1.daumcdn.net/thumb/C53x16.q80/?fname=https%3A%2F%2Fsearch1.daumcdn.net%2Fsearch%2Fstatics%2Fspecial%2Fmi%2Fr2%2Fimg_upbit.png")
 
         await channel.send(embed=embed)
 
