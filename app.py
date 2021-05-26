@@ -69,8 +69,40 @@ async def on_message(message):
         embed.set_image(url="https://www.dogdrip.net/dvs/d/21/02/28/c17bc0d9af8d67d5b071810c0aeadb25.jpg")
         await channel.send(embed=embed)
 
+    elif message.content.startswith('!바이낸스'):
+        channel = message.channel
+        coin_symbol = message.content.replace("!바이낸스 ", "")
+        coin_symbol = str(coin_symbol).upper()
 
-    elif message.content.startswith('!'):
+        response = requests.get(
+            url="https://fapi.binance.com/fapi/v1/ticker/24hr",
+            headers={"Accept": "application/json"},
+            params={"symbol": coin_symbol + "USDT"}
+        )
+
+        coin_data = response.json()
+
+        color = 0xd60000 if coin_data['change_price'] > 0 else 0x0051C7
+        embed = discord.Embed(title=coin_symbol + "/USDT" + " 일별 시세", color=color)
+        embed.set_thumbnail(url=f"https://static.upbit.com/logos/{coin_symbol}.png")
+        #embed.set_image(url=f"https://imagechart.upbit.com/d/mini/{coin_symbol}.png")
+        # embed.add_field(name="시가", value=coin_data['opening_price'], inline=False)
+        embed.add_field(name="저가", value="{:,}".format(int(coin_data['lowPrice'])) + " USD", inline=True)
+        embed.add_field(name="고가", value="{:,}".format(int(coin_data['highPrice'])) + " USD", inline=True)
+        embed.add_field(name="종가", value="{:,}".format(int(coin_data['lastPrice'])) + " USD", inline=False)
+        arrow = ":small_red_triangle:" if coin_data['change_price'] > 0 else ":small_red_triangle_down:"
+
+        change_text = arrow + " {:,}".format(
+            int(coin_data['priceChange'])) + " KRW" + f" ({coin_data['priceChangePercent']}%)"
+        embed.add_field(name="전일대비", value=change_text, inline=False)
+        date = datetime.datetime.fromtimestamp(int(coin_data['timestamp']) // 1000).strftime('%Y-%m-%d %H:%M')
+        embed.set_footer(text=f"\n({date} 기준)",
+                         icon_url="https://search1.daumcdn.net/thumb/C53x16.q80/?fname=https%3A%2F%2Fsearch1.daumcdn.net%2Fsearch%2Fstatics%2Fspecial%2Fmi%2Fr2%2Fimg_upbit.png")
+
+        await channel.send(embed=embed)
+
+
+    elif message.content.startswith('!업비트'):
         channel = message.channel
         response = requests.get(
             url="https://api.upbit.com/v1/market/all",
@@ -83,7 +115,7 @@ async def on_message(message):
         market_code = ""
 
         for data in response_json:
-            if data['korean_name'] == message.content.replace("!", "") and data['market'][:3] == "KRW":
+            if data['korean_name'] == message.content.replace("!업비트", "") and data['market'][:3] == "KRW":
                 print(data)
                 coin_data = data
                 coin_kor_name = data['korean_name']
