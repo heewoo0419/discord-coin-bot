@@ -12,6 +12,7 @@ client = discord.Client()
 token = os.environ["TOKEN"]
 
 
+
 # 봇이 구동되었을 때 보여지는 코드
 @client.event
 async def on_ready():
@@ -36,7 +37,7 @@ async def on_message(message):
         channel = message.channel
         embed = discord.Embed(title="명령어 목록", color=0x0051C7)
         embed.add_field(name="이모지", value="!떡락, !떡상, !드가자, !대공황, !대호황", inline=False)
-        embed.add_field(name="코인 시세", value="!<코인이름>", inline=False)
+        embed.add_field(name="코인 시세", value="!<마켓> <코인이름>", inline=False)
         await channel.send(embed=embed)
 
     elif message.content.startswith('!떡락'):
@@ -81,24 +82,26 @@ async def on_message(message):
         )
 
         coin_data = response.json()
+        try:
+            color = 0xd60000 if float(coin_data['priceChange']) > 0 else 0x0051C7
+            embed = discord.Embed(title=coin_symbol + "/USDT" + " 일별 시세", color=color)
+            embed.set_thumbnail(url=f"https://icons.bitbot.tools/api/{coin_symbol}/128x128")
+            #embed.set_image(url=f"https://imagechart.upbit.com/d/mini/{coin_symbol}.png")
+            # embed.add_field(name="시가", value=coin_data['opening_price'], inline=False)
+            embed.add_field(name="저가", value="{:,}".format(float(coin_data['lowPrice'])) + " USD", inline=True)
+            embed.add_field(name="고가", value="{:,}".format(float(coin_data['highPrice'])) + " USD", inline=True)
+            embed.add_field(name="종가", value="{:,}".format(float(coin_data['lastPrice'])) + " USD", inline=False)
+            arrow = ":small_red_triangle:" if float(coin_data['priceChange']) > 0 else ":small_red_triangle_down:"
 
-        color = 0xd60000 if coin_data['change_price'] > 0 else 0x0051C7
-        embed = discord.Embed(title=coin_symbol + "/USDT" + " 일별 시세", color=color)
-        embed.set_thumbnail(url=f"https://static.upbit.com/logos/{coin_symbol}.png")
-        #embed.set_image(url=f"https://imagechart.upbit.com/d/mini/{coin_symbol}.png")
-        # embed.add_field(name="시가", value=coin_data['opening_price'], inline=False)
-        embed.add_field(name="저가", value="{:,}".format(int(coin_data['lowPrice'])) + " USD", inline=True)
-        embed.add_field(name="고가", value="{:,}".format(int(coin_data['highPrice'])) + " USD", inline=True)
-        embed.add_field(name="종가", value="{:,}".format(int(coin_data['lastPrice'])) + " USD", inline=False)
-        arrow = ":small_red_triangle:" if coin_data['change_price'] > 0 else ":small_red_triangle_down:"
+            change_text = arrow + " {:,}".format(
+                float(coin_data['priceChange'])) + " USD" + f" ({coin_data['priceChangePercent']}%)"
+            embed.add_field(name="전일대비", value=change_text, inline=False)
+            date = datetime.datetime.fromtimestamp(int(coin_data['closeTime']) // 1000).strftime('%Y-%m-%d %H:%M')
+            embed.set_footer(text=f"\n({date} 기준)", icon_url="https://cryptologos.cc/logos/binance-coin-bnb-logo.png?v=010")
+            await channel.send(embed=embed)
+        except:
+            await channel.send("코인을 찾을 수 없습니다")
 
-        change_text = arrow + " {:,}".format(
-            int(coin_data['priceChange'])) + " KRW" + f" ({coin_data['priceChangePercent']}%)"
-        embed.add_field(name="전일대비", value=change_text, inline=False)
-        date = datetime.datetime.fromtimestamp(int(coin_data['timestamp']) // 1000).strftime('%Y-%m-%d %H:%M')
-        #embed.set_footer(text=f"\n({date} 기준)",icon_url="https://search1.daumcdn.net/thumb/C53x16.q80/?fname=https%3A%2F%2Fsearch1.daumcdn.net%2Fsearch%2Fstatics%2Fspecial%2Fmi%2Fr2%2Fimg_upbit.png")
-
-        await channel.send(embed=embed)
 
 
     elif message.content.startswith('!업비트'):
@@ -114,7 +117,7 @@ async def on_message(message):
         market_code = ""
 
         for data in response_json:
-            if data['korean_name'] == message.content.replace("!업비트", "") and data['market'][:3] == "KRW":
+            if data['korean_name'] == message.content.replace("!업비트 ", "") and data['market'][:3] == "KRW":
                 print(data)
                 coin_data = data
                 coin_kor_name = data['korean_name']
