@@ -126,21 +126,22 @@ async def on_message(message):
                 }
             )
             stock_data = response.json()['recentSecurity']
-            coin_code = stock_data.replace("KRW-", "")
+            print(stock_data)
             color = 0xd60000 if stock_data['changePrice'] > 0 else 0x0051C7
-            embed = discord.Embed(title=stock_data['name'] + f" ({stock_data['marketName']} {stock_data['shortCode']})" + " 일별 시세", color=color)
+            embed = discord.Embed(title=stock_data['name']+ " 일별 시세" , description= f" ({stock_data['marketName']} {stock_data['shortCode']})", color=color)
 
             # 일봉
-            embed.set_thumbnail(url=stock_data['dayChartUrl'])
+            embed.set_image(url=stock_data['dayChartUrl'])
+
             embed.add_field(name="저가", value="{:,}".format(int(stock_data['lowPrice'])) + " KRW", inline=True)
             embed.add_field(name="고가", value="{:,}".format(int(stock_data['highPrice'])) + " KRW", inline=True)
             embed.add_field(name="종가", value="{:,}".format(int(stock_data['displayedPrice'])) + " KRW", inline=False)
-            arrow = ":small_red_triangle:" if ['change_price'] > 0 else ":small_red_triangle_down:"
+            arrow = ":small_red_triangle:" if stock_data['changePrice'] > 0 else ":small_red_triangle_down:"
 
             change_text = arrow + " {:,}".format(int(stock_data['changePrice'])) + " KRW" + f" ({round(stock_data['changePriceRate'] * 100, 2)}%)"
             embed.add_field(name="전일대비", value=change_text, inline=False)
-            date = stock_data['stock_data']
-            embed.set_footer(text=f"\n({date} 기준)", icon_url="https://search1.daumcdn.net/thumb/C53x16.q80/?fname=https%3A%2F%2Fsearch1.daumcdn.net%2Fsearch%2Fstatics%2Fspecial%2Fmi%2Fr2%2Fimg_upbit.png")
+            date = stock_data['date']
+            embed.set_footer(text=f"\n({date} 기준)", icon_url="https://cdn.stockplus.com/stockplus-web/server_assets/assets/images/common/title_stock-934bc4bc65f5f19e61462c3a71e5a1eca241cd1354982b5727ba4bff9354798d.png")
 
             await channel.send(embed=embed)
 
