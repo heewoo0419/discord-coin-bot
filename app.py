@@ -103,6 +103,47 @@ async def on_message(message):
             await channel.send("코인을 찾을 수 없습니다")
 
 
+    elif message.content.startswith("!주식"):
+        channel = message.channel
+        keyword = message.content.replace("!주식 ", "")
+        response = requests.get(
+            url="https://stockplus.com/api/search/autocomplete.json",
+            params={
+                "keyword": keyword
+            }
+        )
+        res_json = response.json()
+        print(response.json())
+        if not res_json['suggestItems']:
+            await channel.send("찾을수가 없어요 😥")
+        else:
+            asset_id = res_json['suggestItems'][0]['assetId']
+
+            response = requests.get(
+                url=f"https://stockplus.com/api/securities/{asset_id}.json",
+                params={
+                    "keyword": keyword
+                }
+            )
+            stock_data = response.json()['recentSecurity']
+            coin_code = stock_data.replace("KRW-", "")
+            color = 0xd60000 if stock_data['changePrice'] > 0 else 0x0051C7
+            embed = discord.Embed(title=stock_data['name'] + f" ({stock_data['marketName']} {stock_data['shortCode']})" + " 일별 시세", color=color)
+
+            # 일봉
+            embed.set_thumbnail(url=stock_data['dayChartUrl'])
+            embed.add_field(name="저가", value="{:,}".format(int(stock_data['lowPrice'])) + " KRW", inline=True)
+            embed.add_field(name="고가", value="{:,}".format(int(stock_data['highPrice'])) + " KRW", inline=True)
+            embed.add_field(name="종가", value="{:,}".format(int(stock_data['displayedPrice'])) + " KRW", inline=False)
+            arrow = ":small_red_triangle:" if ['change_price'] > 0 else ":small_red_triangle_down:"
+
+            change_text = arrow + " {:,}".format(int(stock_data['changePrice'])) + " KRW" + f" ({round(stock_data['changePriceRate'] * 100, 2)}%)"
+            embed.add_field(name="전일대비", value=change_text, inline=False)
+            date = stock_data['stock_data']
+            embed.set_footer(text=f"\n({date} 기준)", icon_url="https://search1.daumcdn.net/thumb/C53x16.q80/?fname=https%3A%2F%2Fsearch1.daumcdn.net%2Fsearch%2Fstatics%2Fspecial%2Fmi%2Fr2%2Fimg_upbit.png")
+
+            await channel.send(embed=embed)
+
 
     elif message.content.startswith('!업비트'):
         channel = message.channel
