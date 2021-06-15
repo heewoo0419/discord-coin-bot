@@ -9,7 +9,7 @@ from decimal import *
 client = discord.Client()
 
 # 생성된 토큰을 입력해준다.
-token = "ODQ2NDQzNjcxOTE3OTUzMDQ0.YKvmGQ.Z6HoJ5essUnPnRNPLXo2YEDp-ww" #os.environ["TOKEN"]
+token = os.environ["TOKEN"]
 
 
 
